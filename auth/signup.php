@@ -2,6 +2,8 @@
 
 require __DIR__ . '/../init.php';
 
+$response = null;
+
 if(dataPosted()){
     $response = require __DIR__ . '/../core/logic/auth/signup.php';
 
