@@ -7,7 +7,7 @@ const ROUTE_HOME = BASE_URL;
 // Auth
 const ROUTE_SIGNIN = BASE_URL . 'auth/signin.php';
 const ROUTE_SIGNOUT = BASE_URL . 'auth/signout.php';
-const ROUTE_REGISTER = BASE_URL . 'auth/register.php';
+const ROUTE_REGISTER = BASE_URL . 'auth/signup.php';
 
 // User
 const ROUTE_USER_DASHBOARD = BASE_URL . 'user/dashboard.php';

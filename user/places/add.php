@@ -6,6 +6,8 @@ SessionManager::mustBeLoggedIn();
 
 require __DIR__ . '/../../core/logic/business/categories.php';
 
+$response = null;
+
 if(dataPosted()){
     $response = require __DIR__ . '/../../core/logic/business/add_business.php';
 

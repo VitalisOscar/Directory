@@ -3,6 +3,7 @@
 require __DIR__ . '/../../init.php';
 require __DIR__ . '/../../core/logic/business/get_user_businesses.php';
 require __DIR__ . '/../../core/logic/business/reviews.php';
+require __DIR__ . '/../../core/logic/business/categories.php';
 
 SessionManager::mustBeLoggedIn();
 
@@ -26,6 +27,21 @@ $reviews = [];
 if($section == 'reviews'){
     $reviews = getBusinessReviews($business->getId());
 }
+
+
+$response = null;
+
+if(dataPosted()){
+    $response = require __DIR__ . '/../../core/logic/business/edit_business.php';
+
+    if(is_bool($response) && $response){
+        
+    }else{
+        echo "<script>alert('".$response."');</script>";
+    }
+}
+
+$categories = getCategories();
 
 ?>
 
@@ -172,6 +188,111 @@ if($section == 'reviews'){
 
 
             </div>
+            <?php }else{ ?>
+
+            <form action="" class="col-lg-10 mx-auto" method="post" enctype="multipart/form-data">
+
+                <div class="mb-3">
+                    <i>Fields marked with * are required</i>
+                </div>
+
+                <?php if(is_string($response)){ ?>
+                <div class="mb-3">
+                    <strong class="text-danger"><?= $response ?></strong>
+                </div>
+                <?php } ?>
+
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="name" class="mb-0">Business Name:*</label>
+                            <input type="text" class="form-control" name="name" id="name" value="<?= $_POST["name"] ?? $business->name ?>" required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="category" class="mb-0">Select Category:*</label>
+                            <select name="category" class="form-control" id="category" required>
+                                <?php foreach($categories as $category){ ?>
+                                <option value="<?= $category->getId() ?>" <?php if($category->getId() == post('category') || $category->getId() == $business->category->getId()){ ?> selected<?php } ?>><?= $category->name ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="phone" class="mb-0">Contact Phone:*</label>
+                            <input type="tel" class="form-control" name="phone" id="phone" value="<?= $_POST["phone"] ?? $business->phone ?>" required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="email" class="mb-0">Contact Email:*</label>
+                            <input type="email" class="form-control" name="email" id="email" value="<?= $_POST["email"] ?? $business->email ?>" required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="address" class="mb-0">Business Address:*</label>
+                            <input type="text" class="form-control" name="address" id="address" value="<?= $_POST["address"] ?? $business->address ?>" required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="website" class="mb-0">Website:</label>
+                            <input type="text" class="form-control" name="website" id="website" value="<?= $_POST["website"] ?? $business->data['website'] ?? '' ?>">
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="description" class="mb-0">Description:*</label>
+                            <textarea name="description" class="form-control" id="description" required><?= $_POST["description"] ?? $business->description ?></textarea>
+                        </div>
+                    </div>
+
+
+                    <!-- <div class="col-12">
+                        <h4>Business Hours</h4> -->
+
+                        <!-- <?php foreach ($days as $key=>$day){ ?>
+                            <div class="d-flex mb-3">
+                                <label><?= $day ?></label>
+                                <select name="<?= $key ?>[opens]" class="form-control">
+                                    <option value="">Opens At</option>
+                                    <?php for($i = 0; $i < 24; $i++){ ?>
+                                        <option value="<?= $i ?>"<?php if($_POST[$key.'[opens]'] == $i){ ?> selected<?php } ?>>
+                                            <?= ($i > 12 ? (($i-12).':00 PM'):($i == 12 ? '12:00 Noon':($i.':00 AM'))) ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+
+                                <select name="<?= $key ?>[closes]" class="form-control">
+                                    <option value="">Closes At</option>
+                                    <?php for($i = 0; $i < 24; $i++){ ?>
+                                        <option value="<?= $i ?>"<?php if($_POST[$key.'[closes]'] == $i){ ?> selected<?php } ?>>
+                                            <?= ($i > 12 ? (($i-12).':00 PM'):($i == 12 ? '12:00 Noon':($i.':00 AM'))) ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        <?php } ?>
+                    </div> -->
+
+                    <div class="col-12">
+                        <button class="btn btn-success btn-lg">
+                            Update
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+
             <?php } ?>
 
         </div>
