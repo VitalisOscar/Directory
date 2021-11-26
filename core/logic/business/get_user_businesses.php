@@ -45,6 +45,10 @@ function getSingleUserOwnedBusiness($user){
     $conn = db();
     $business_id = get('business_id', $conn);
 
+    if($business_id == null){
+        return null;
+    }
+
     $sql = "SELECT businesses.*,
         `categories`.`name` as `category_name`,
         `users`.`name` as `user_name`,
