@@ -1,5 +1,4 @@
 <?php
-
 require __DIR__ . '/../init.php';
 require __DIR__ . '/../core/logic/business/explore_businesses.php';
 require __DIR__ . '/../core/logic/business/reviews.php';
@@ -79,25 +78,6 @@ if($user != null){
 
 <body>
     <?php include __DIR__ . '/../header.php'; ?>
-    
-    <section class="slider h-auto align-items-center">
-        <!-- <img src="images/slider.jpg" class="img-fluid" alt="#"> -->
-        <div class="container">
-            <div class="row d-flex justify-content-center">
-                <div class="col-md-12">
-                    <div class="slider-title_box">
-                        <div class="row d-flex justify-content-center">
-                            <div class="col-md-10 pt-3">
-                                <h2 class="text-white">Business Details</h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
 
     <div>
         <!-- Swiper -->
@@ -129,7 +109,7 @@ if($user != null){
                 <div class="col-md-6">
                     <h5><?= $business->name ?></h5>
                     <?php
-                        $avg_rating = round(floatval($business->data['average_rating'] ?? 0));
+                        $avg_rating = floatval($business->data['average_rating'] ?? 0);
                     ?>
 
                     <p>
@@ -173,7 +153,7 @@ if($user != null){
     <section class="light-bg booking-details_wrap">
         <div class="container">
             <div class="row">
-                <div class="col-md-8 responsive-wrap">
+                <div class="col-md-8 col-lg-7 responsive-wrap">
                     <div class="booking-checkbox_wrap">
                         <div class="booking-checkbox">
                             <h5 class="mb-3 text-left">About This Place</h5>
@@ -226,7 +206,7 @@ if($user != null){
                                     </div>
                                     <div class="customer-rating<?php if($review->rating < 4){ ?> customer-rating-red<?php } ?>"><?= number_format($review->rating, 1) ?></div>
                                 </div>
-                                <p class="customer-text">
+                                <p class="customer-text mt-0">
                                 <?= $review->review ?>
                                 </p>
                             </div>
@@ -236,8 +216,10 @@ if($user != null){
                         
                     </div>
                 </div>
-                <div class="col-md-4 responsive-wrap">
+                <div class="col-md-4 col-lg-5 responsive-wrap">
                     <div class="contact-info">
+                        <div id="map" style="height: 300px"></div>
+
                         <div class="address">
                             <span class="icon-location-pin"></span>
                             <p><?= $business->address ?></p>
@@ -250,10 +232,14 @@ if($user != null){
                             <span class="icon-link"></span>
                             <p><?= $business->website ?></p>
                         </div>
-                        <div class="address">
+                        <div class="address mb-2">
                             <span class="icon-clock"></span>
-                            <p>Mon - Sun 09:30 am - 05:30 pm <br>
-                            <span class="open-now">OPEN NOW</span></p>
+                            <p><?= $business->getTodayHours() ?><br>
+                            <?php if($business->isOpen()){ ?>
+                                <span class="open-now">OPEN NOW</span></p>
+                            <?php }else{ ?>
+                                <span class="closed-now">CLOSED NOW</span></p>
+                            <?php } ?>
                         </div>
 
                     </div>
@@ -277,9 +263,6 @@ if($user != null){
         </div>
     </section>
 
-
-    <a href="#" class="btn btn-lg btn-success chat-btn"> <i class="fa fa-comment"></i> Chat with Business</a>
-
     <style>
         .chat-btn{
             position: fixed;
@@ -299,11 +282,11 @@ if($user != null){
                 <div class="modal-body">
 
                     <p class="lead mt-0">
-                        You need to be signed in to add a review about <?= $business->name ?>
+                        You need to be signed in to add a review about <?= $business->name ?>. We will redirect you back here once you are done
                     </p>
 
                     <div>
-                        <a href="<?= ROUTE_SIGNIN ?>" class="btn btn-block btn-primary">Sign In</a>
+                        <a href="<?= url(ROUTE_SIGNIN, ['return' => urlencode(currentUrl())]) ?>" class="btn btn-block btn-primary">Sign In</a>
                         <button type="button" data-dismiss="modal" class="btn btn-white btn-block">Cancel</button>
                     </div>
                 </div>
@@ -418,20 +401,133 @@ if($user != null){
     </script>
 
     <script>
-        $(window).scroll(function() {
-            // 100 = The point you would like to fade the nav in.
-
-            if ($(window).scrollTop() > 100) {
-
-                $('.fixed').addClass('is-sticky');
-
-            } else {
-
-                $('.fixed').removeClass('is-sticky');
-
-            };
-        });
+        $('.fixed').addClass('is-sticky');
     </script>
+
+    <script async
+    src="https://maps.googleapis.com/maps/api/js?key=<?= GOOGLE_MAPS_API_KEY ?>&libraries=places&callback=loadMap">
+    </script>
+
+    <script>
+    function loadMap(){
+        var place = '<?= $business->name.' '.$business->address ?>';
+        var map;
+        var service;
+        var infowindow;
+
+        var mapCenter = '';
+
+        infowindow = new google.maps.InfoWindow();
+
+        map = new google.maps.Map(
+            document.getElementById('map'), {zoom: 15});
+
+        var request = {
+            query: place,
+            fields: ['name', 'geometry'],
+        };
+
+        var service = new google.maps.places.PlacesService(map);
+
+        service.findPlaceFromQuery(request, function(results, status) {
+            if (status === google.maps.places.PlacesServiceStatus.OK) {
+                for (var i = 0; i < results.length; i++) {
+                    createMarker(results[i]);
+                }
+                map.setCenter(results[0].geometry.location);
+            }
+        });
+
+    }
+
+    function createMarker(place) {
+        if (!place.geometry || !place.geometry.location) return;
+
+        const marker = new google.maps.Marker({
+            map,
+            position: place.geometry.location,
+        });
+
+        google.maps.event.addListener(marker, "click", () => {
+            infowindow.setContent(place.name || "");
+            infowindow.open(map);
+        });
+    }
+
+    </script>
+
+    <?php if(SessionManager::loggedIn()){ ?>
+    <!-- <button class="border-0 bg-primary open-chat __talkjs_launcher closed" style="z-index: 1001" id="__talkjs_launcher" aria-label="Open chat popup">OC</button> -->
+
+    <script>
+    (function(t,a,l,k,j,s){
+    s=a.createElement('script');s.async=1;s.src="https://cdn.talkjs.com/talk.js";a.head.appendChild(s)
+    ;k=t.Promise;t.Talk={v:3,ready:{then:function(f){if(k)return new k(function(r,e){l.push([f,r,e])});l
+    .push([f])},catch:function(){return k&&new k()},c:l}};})(window,document,[]);
+    </script>
+
+    <script>
+        Talk.ready.then(function () {
+            var me = new Talk.User({
+                id: 'u_<?= $user->getId() ?>',
+                name: '<?= $user->name ?>',
+                email: '<?= $user->email ?>',
+                photoUrl: '<?= BASE_URL ?>assets/images/user.png',
+            });
+            window.talkSession = new Talk.Session({
+                appId: '<?= TALKJS_APP_ID ?>',
+                me: me,
+            });
+            var other = new Talk.User({
+                id: 'b_<?= $business->getId() ?>',
+                name: '<?= explode(' ', $business->user->name)[0].' from '.$business->name ?>',
+                email: '<?= $business->email ?>',
+                photoUrl: '<?= public_file($business->images[0]) ?>',
+                welcomeMessage: 'Hello, thanks for reaching out to <?= $business->name ?>',
+            });
+
+            var conversation = window.talkSession.getOrCreateConversation(
+                Talk.oneOnOneId(me, other)
+            );
+
+            conversation.setParticipant(me);
+            conversation.setParticipant(other);
+
+            var popup = window.talkSession.createPopup();
+            popup.select(conversation);
+            popup.mount({ show: true });
+            // popup.hide();
+
+            $('.__talkjs_launcher').click(function(){
+                // popup.show();
+            });
+        });
+
+    </script>
+    <?php }else{ ?>
+    <button class="open-chat btn btn-lg btn-success chat-btn" data-toggle="modal" data-target="#chat_with_biz"><i class="fa fa-comment"></i> Chat with Business</button>
+
+    <div class="modal" id="chat_with_biz" data-backdrop="static">
+        <div class="modal-dialog modal-sm" style="max-width: 400px">
+            <div class="modal-content">
+
+                <div class="modal-body">
+
+                    <p class="lead mt-0">
+                        Please sign in to start chatting with <?= $business->name ?>. We will redirect you back here once you are done
+                    </p>
+
+                    <div>
+                        <a href="<?= url(ROUTE_SIGNIN, ['return' => urlencode(currentUrl())]) ?>" class="btn btn-block btn-primary">Sign In</a>
+                        <button type="button" data-dismiss="modal" class="btn btn-white btn-block">Cancel</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <?php } ?>
     
 </body>
 

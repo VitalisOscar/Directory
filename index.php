@@ -89,7 +89,7 @@ $categories = getCategories();
                             </div>
 
                             <?php
-                                $avg_rating = round(floatval($business->data['average_rating'] ?? 0));
+                                $avg_rating = floatval($business->data['average_rating'] ?? 0);
                             ?>
 
                             <span class="featured-rating<?= $avg_rating >= 4 ? '-green':($avg_rating >= 3 ? '-orange':'') ?>">
@@ -102,11 +102,11 @@ $categories = getCategories();
                                 <p><span>$$$</span>$$</p> -->
 
                                 <p>
-                                    <?php for($i = 0; $i < $avg_rating; $i++){ ?>
+                                    <?php for($i = 0; $i < round($avg_rating); $i++){ ?>
                                     <i style="font-size: .8em" class="small fa fa-star text-danger"></i>
                                     <?php } ?>
 
-                                    <?php for($i = 0; $i < (5 - $avg_rating); $i++){ ?>
+                                    <?php for($i = 0; $i < (5 - round($avg_rating)); $i++){ ?>
                                     <i style="font-size: .8em" class="small fa fa-star-o"></i>
                                     <?php } ?>
 
@@ -128,6 +128,14 @@ $categories = getCategories();
                                     </li>
 
                                 </ul>
+
+                                <div class="bottom-icons">
+                                    <?php if($business->isOpen()){ ?>
+                                    <div class="open-now">OPEN NOW</div>
+                                    <?php }else{ ?>
+                                    <div class="closed-now">CLOSED NOW</div>
+                                    <?php } ?>
+                                </div>
                             </div>
                         </a>
                     </div>

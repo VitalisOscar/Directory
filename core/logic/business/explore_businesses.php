@@ -1,5 +1,7 @@
 <?php
 
+use Carbon\Carbon;
+
 /**
  * Get business list
  * @return Business[]
@@ -44,8 +46,45 @@ function getBusinessResults(){
             OR `businesses`.`address` LIKE '%$keyword%')");
     }
 
+    $open = get('open');
+    if($open != null){
+        $now = Carbon::now();
+
+        $day = strtolower($now->dayName);
+        $now = $now->hour;
+
+        array_push($filters,"(
+            (json_extract(`hours`, '$.$day.opens') <= $now AND
+            json_extract(`hours`, '$.$day.closes') > $now) OR
+            (json_extract(`hours`, '$.$day.opens') <= $now AND
+            json_extract(`hours`, '$.$day.closes') = 0 AND
+            (json_extract(`hours`, '$.$day.closes') + 24) > $now)
+        )");
+    }
+
+    $known = get('known');
+    if($known != null){
+        array_push($filters,"(EXISTS(SELECT `reviews`.* FROM `reviews`
+            WHERE `reviews`.`business_id` = `businesses`.`id`)
+            OR EXISTS(SELECT `acknowledgements`.* FROM `acknowledgements`
+            WHERE `acknowledgements`.`business_id` = `businesses`.`id`))");
+    }
+
     if(count($filters) > 0){
         $sql .= " WHERE ".implode(" AND ", $filters);
+    }
+
+    // Ordering
+    $order = get('order');
+
+    if($order == 'ratings'){
+        $sql .= " ORDER BY 
+        (SELECT avg(`reviews`.`rating`) FROM `reviews` WHERE `reviews`.`business_id` = `businesses`.`id`) DESC,
+        (SELECT count(*) FROM `reviews` WHERE `reviews`.`business_id` = `businesses`.`id`) DESC";
+    }else if($order == 'oldest'){
+        $sql .= " ORDER BY `businesses`.`added_at` ASC";
+    }else{
+        $sql .= " ORDER BY `businesses`.`added_at` DESC";
     }
 
     $sql .= " LIMIT $limit OFFSET $offset";
@@ -87,6 +126,7 @@ function getRecommendedBusinesses(){
         INNER JOIN `users` ON `businesses`.`user_id` = `users`.`id`
         ORDER BY
         (SELECT avg(`reviews`.`rating`) FROM `reviews` WHERE `reviews`.`business_id` = `businesses`.`id`) DESC,
+        (SELECT count(*) FROM `reviews` WHERE `reviews`.`business_id` = `businesses`.`id`) DESC,
         (SELECT count(*) FROM `acknowledgements` WHERE `acknowledgements`.`business_id` = `businesses`.`id`) DESC
         LIMIT $limit OFFSET $offset";
 

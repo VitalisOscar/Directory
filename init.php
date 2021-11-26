@@ -1,7 +1,13 @@
 <?php
 
+ini_set('display_errors',1);
+error_reporting(E_ALL);
+
 // Start session
 session_start();
+
+// composer packages autoload
+require __DIR__ . '/vendor/autoload.php'; 
 
 // Autoload for models
 require __DIR__ . '/core/models/autoload.php'; 
@@ -20,6 +26,6 @@ require __DIR__ . '/core/utils/db.php';
 require __DIR__ . '/core/config/misc.php';
 
 // Session management
-require __DIR__ . '/core/utils/session.php';
+require __DIR__ . '/core/utils/SessionManager.php';
 
 // Initialize session

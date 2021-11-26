@@ -177,32 +177,57 @@ $days = [
                     </div>
 
 
-                    <!-- <div class="col-12">
-                        <h4>Business Hours</h4> -->
+                    <div class="col-12 mb-3">
+                        <h4>Business Hours</h4>
 
-                        <!-- <?php foreach ($days as $key=>$day){ ?>
-                            <div class="d-flex mb-3">
-                                <label><?= $day ?></label>
-                                <select name="<?= $key ?>[opens]" class="form-control">
-                                    <option value="">Opens At</option>
-                                    <?php for($i = 0; $i < 24; $i++){ ?>
-                                        <option value="<?= $i ?>"<?php if($_POST[$key.'[opens]'] == $i){ ?> selected<?php } ?>>
-                                            <?= ($i > 12 ? (($i-12).':00 PM'):($i == 12 ? '12:00 Noon':($i.':00 AM'))) ?>
-                                        </option>
-                                    <?php } ?>
-                                </select>
+                        <table>
 
-                                <select name="<?= $key ?>[closes]" class="form-control">
-                                    <option value="">Closes At</option>
-                                    <?php for($i = 0; $i < 24; $i++){ ?>
-                                        <option value="<?= $i ?>"<?php if($_POST[$key.'[closes]'] == $i){ ?> selected<?php } ?>>
-                                            <?= ($i > 12 ? (($i-12).':00 PM'):($i == 12 ? '12:00 Noon':($i.':00 AM'))) ?>
-                                        </option>
-                                    <?php } ?>
-                                </select>
-                            </div>
+                        <tr>
+                            <th>Day</th>
+                            <th>Opens</th>
+                            <th>Closes</th>
+                        </tr>
+                        <?php foreach ($days as $key=>$day){ ?>
+                            <tr>
+                                <th class="pr-3 pb-3"><?= $day.':' ?></th>
+
+                                <?php
+                                $open_id = $key.'_open';
+                                $close_id = $key.'_close';
+                                ?>
+
+                                <td class="pr-3 pb-3">
+                                    <select
+                                        name="<?= $open_id ?>" class="form-control"
+                                        id="<?= $open_id ?>"
+                                        onchange="if(this.value == ''){document.querySelector('#<?= $close_id ?>').selectedIndex = 0;}"
+                                        >
+                                        <option value="">Closed</option>
+                                        <?php for($i = 0; $i < 24; $i++){ ?>
+                                            <option value="<?= $i ?>"<?php if($_POST[$open_id] ?? 8 == $i){ ?> selected<?php } ?>>
+                                                <?= ($i > 12 ? (($i-12).':00 PM'):($i == 12 ? '12:00 Noon':($i.':00 AM'))) ?>
+                                            </option>
+                                        <?php } ?>
+                                    </select>
+                                </td>
+
+                                <td class="pb-3">
+                                    <select name="<?= $close_id ?>" class="form-control" id="<?= $close_id ?>"
+                                    onchange="if(this.value == ''){document.querySelector('#<?= $open_id ?>').selectedIndex = 0;}"
+                                    >
+                                        <option value="">Closed</option>
+                                        <?php for($i = 0; $i < 24; $i++){ ?>
+                                            <option value="<?= $i ?>"<?php if($_POST[$close_id] ?? 18 == $i){ ?> selected<?php } ?>>
+                                                <?= ($i > 12 ? (($i-12).':00 PM'):($i == 12 ? '12:00 Noon':($i.':00 AM'))) ?>
+                                            </option>
+                                        <?php } ?>
+                                    </select>
+                                </td>
+                            </tr>
                         <?php } ?>
-                    </div> -->
+
+                        </table>
+                    </div>
 
                     <div class="col-12">
                         <button class="btn btn-success btn-lg">
@@ -223,19 +248,7 @@ $days = [
     <script src="assets/js/bootstrap.min.js"></script>
 
     <script>
-        $(window).scroll(function() {
-            // 100 = The point you would like to fade the nav in.
-
-            if ($(window).scrollTop() > 100) {
-
-                $('.fixed').addClass('is-sticky');
-
-            } else {
-
-                $('.fixed').removeClass('is-sticky');
-
-            };
-        });
+        $('.fixed').addClass('is-sticky');
     </script>
 </body>
 

@@ -47,3 +47,5 @@ CREATE TABLE IF NOT EXISTS `acknowledgements`(
     `business_id` INTEGER(11) NOT NULL REFERENCES `businesses`(`id`),
     `added_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER TABLE `businesses` ADD `hours` TEXT NULL DEFAULT '{}' AFTER `website`; 

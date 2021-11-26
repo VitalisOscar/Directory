@@ -6,8 +6,8 @@ class Review extends Model{
     public $business, $user;
 
     function __construct($data = []){
-        $this->review = $data['review'] ?? 'No review text';
-        $this->title = $data['title'] ?? 'No review Title';
+        $this->review = ($data['review'] ?? '') == '' ? 'No review comment':$data['review'];
+        $this->title = ($data['title'] ?? '') == '' ? 'No review title':$data['title'];
         $this->rating = $data['rating'] ?? 1;
         $this->updateDate($data['added_at'] ?? null);
         $this->setId($data['id'] ?? null);

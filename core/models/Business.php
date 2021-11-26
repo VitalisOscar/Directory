@@ -1,9 +1,11 @@
 <?php
 
+use Carbon\Carbon;
+
 class Business extends Model{
 
     public $name, $description, $address, $phone, $email, $website;
-    public $images, $open_hours;
+    public $images, $hours;
     public $user, $category;
 
     function __construct($data = []){
@@ -14,7 +16,7 @@ class Business extends Model{
         $this->email = $data['email'] ?? null;
         $this->website = ($data['website'] ?? '') == '' ? 'No website added':$data['website'];
         $this->images = json_decode($data['images'] ?? "[]", true);
-        $this->open_hours = json_decode($data['open_hours'] ?? "[]", true);
+        $this->hours = json_decode($data['hours'] ?? "[]", true);
         $this->setId($data['id'] ?? null);
         $this->data = $data;
 
@@ -32,21 +34,65 @@ class Business extends Model{
     }
 
     function isOpen(){
-        $open_hours = $this->open_hours;
-        $today = '';
+        $hours = $this->hours;
+        $now = Carbon::now();
 
-        $opens_full_day = true;
+        $key = strtolower($now->dayName);
 
-        if($opens_full_day){
-            return true;
+        // check if closed today
+        if(!isset($hours[$key]) || $hours[$key] == []){
+            return false;
         }
 
-        $opens_at = '';
-        $closes_at = '';
+        $opens_at = $hours[$key]['opens'] ?? 8;
+        $closes_at = $hours[$key]['closes'] ?? 18;
+        if($closes_at == 0) $closes_at = 24;
 
-        $now = '';
+        $now = $now->hour;
 
         return ($now >= $opens_at && $now < $closes_at);
+    }
+
+    function getTodayHours(){
+        $hours = $this->hours;
+        $now = Carbon::now();
+        $day = $now->dayName;
+
+        $key = strtolower($now->dayName);
+
+        // check if closed today
+        if(!isset($hours[$key]) || $hours[$key] == []){
+            return $day.' - Closed';
+        }
+
+        $opens_at = $hours[$key]['opens'] ?? 8;
+        $closes_at = $hours[$key]['closes'] ?? 18;
+
+        return $day.
+            ' ('.$now->setTime($opens_at, 0)->format('H:i').
+            ' to '.
+            $now->setTime($closes_at, 0)->format('H:i').
+            ')';
+    }
+
+    function getOpensAt($key){
+        $hours = $this->hours;
+
+        if(!isset($hours[$key]) || $hours[$key] == []){
+            return null;
+        }
+
+        return $hours[$key]['opens'];
+    }
+
+    function getClosesAt($key){
+        $hours = $this->hours;
+
+        if(!isset($hours[$key]) || $hours[$key] == []){
+            return null;
+        }
+
+        return $hours[$key]['closes'];
     }
 
     static function fromArray($data = []){

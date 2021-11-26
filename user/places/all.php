@@ -47,7 +47,7 @@ $businesses = getUserOwnedBusinesses($user);
                     <div class="slider-title_box">
                         <div class="row d-flex justify-content-center">
                             <div class="col-md-10 pt-3">
-                                <h2 class="text-white">Your Businesses</h2>
+                                <h2 class="text-white">My Places</h2>
                             </div>
                         </div>
                     </div>
@@ -92,7 +92,7 @@ $businesses = getUserOwnedBusinesses($user);
                                 <?php if($business->isOpen()){ ?>
                                     <span class="position-absolute top-0 left-0 d-inline-block bg-success text-white px-2 py-1 font-weight-500">Open</span>
                                 <?php } else { ?>
-                                    <span class="position-absolute top-0 left-0 d-inline-block bg-success text-white px-2 py-1 font-weight-500">Open</span>
+                                    <span class="position-absolute top-0 left-0 d-inline-block bg-danger text-white px-2 py-1 font-weight-500">Closed</span>
                                 <?php } ?>
                                 <div class="embed-responsive embed-responsive-16by9">
                                     <div class="embed-responsive-item">
@@ -180,19 +180,7 @@ $businesses = getUserOwnedBusinesses($user);
     <script src="assets/js/bootstrap.min.js"></script>
 
     <script>
-        $(window).scroll(function() {
-            // 100 = The point you would like to fade the nav in.
-
-            if ($(window).scrollTop() > 100) {
-
-                $('.fixed').addClass('is-sticky');
-
-            } else {
-
-                $('.fixed').removeClass('is-sticky');
-
-            };
-        });
+        $('.fixed').addClass('is-sticky');
     </script>
 </body>
 

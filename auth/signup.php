@@ -4,11 +4,17 @@ require __DIR__ . '/../init.php';
 
 $response = null;
 
+$return = get('return');
+
 if(dataPosted()){
     $response = require __DIR__ . '/../core/logic/auth/signup.php';
 
     if(is_bool($response) && $response){
-        redirect(ROUTE_USER_DASHBOARD);
+        if($return != null){
+            redirect($return);
+        }else{
+            redirect(ROUTE_USER_DASHBOARD);
+        }
     }
 
     echo "<script>alert('".$response."');</script>";
@@ -97,7 +103,7 @@ if(dataPosted()){
 
                     <div class="text-center">
                         <div class="mb-2">
-                            Already registered? <a href="<?= ROUTE_SIGNIN ?>">Sign In</a>
+                            Already registered? <a href="<?= url(ROUTE_SIGNIN, ['return' => $return]) ?>">Sign In</a>
                         </div>
                     </div>
                 </form>
@@ -112,20 +118,11 @@ if(dataPosted()){
     <script src="assets/js/popper.min.js"></script>
     <script src="assets/js/bootstrap.min.js"></script>
 
+    
+
+
     <script>
-        $(window).scroll(function() {
-            // 100 = The point you would like to fade the nav in.
-
-            if ($(window).scrollTop() > 100) {
-
-                $('.fixed').addClass('is-sticky');
-
-            } else {
-
-                $('.fixed').removeClass('is-sticky');
-
-            };
-        });
+        $('.fixed').addClass('is-sticky');
     </script>
 </body>
 

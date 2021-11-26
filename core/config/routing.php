@@ -12,12 +12,14 @@ const ROUTE_REGISTER = BASE_URL . 'auth/signup.php';
 // User
 const ROUTE_USER_DASHBOARD = BASE_URL . 'user/dashboard.php';
 const ROUTE_USER_REVIEWS = 'user/reviews.php';
+const ROUTE_CHATS = 'user/chats.php';
 
 // Business
 const ROUTE_USER_BUSINESSES = BASE_URL . 'user/places/all.php';
 const ROUTE_ADD_BUSINESS = BASE_URL . 'user/places/add.php';
 const ROUTE_SINGLE_USER_BUSINESS = BASE_URL . 'user/places/single.php';
 const ROUTE_SINGLE_USER_BUSINESS_REVIEWS = ROUTE_SINGLE_USER_BUSINESS . '?section=reviews';
+const ROUTE_SINGLE_USER_BUSINESS_CHATS = ROUTE_SINGLE_USER_BUSINESS . '?section=chats';
 
 // Business Discovery
 const ROUTE_FIND_BUSINESSES = BASE_URL . 'places/discover.php';

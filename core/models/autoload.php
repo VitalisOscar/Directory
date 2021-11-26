@@ -1,5 +1,7 @@
 <?php
 
 spl_autoload_register(function($name){
-    require __DIR__ . "/$name.php";
+    if(file_exists(__DIR__.'/'.$name.'.php')){
+        require __DIR__ . "/$name.php";
+    }
 });

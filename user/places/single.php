@@ -18,7 +18,7 @@ if($business == null){
 
 $section = get('section');
 
-if($section != 'details' && $section != 'reviews'){
+if($section != 'details' && $section != 'reviews' && $section != 'chats'){
     $section = 'details';
 }
 
@@ -35,13 +35,23 @@ if(dataPosted()){
     $response = require __DIR__ . '/../../core/logic/business/edit_business.php';
 
     if(is_bool($response) && $response){
-        
+        $business = getSingleUserOwnedBusiness($user);
     }else{
         echo "<script>alert('".$response."');</script>";
     }
 }
 
 $categories = getCategories();
+
+$days = [
+    'monday' => 'Monday',
+    'tuesday' => 'Tuesday',
+    'wednesday' => 'Wednesday',
+    'thursday' => 'Thursday',
+    'friday' => 'Friday',
+    'saturday' => 'Saturday',
+    'sunday' => 'Sunday',
+];
 
 ?>
 
@@ -116,6 +126,7 @@ $categories = getCategories();
             <div class="nav nav-pills">
                 <a href="<?= url(ROUTE_SINGLE_USER_BUSINESS, ['business_id' => $business->getId()]) ?>" class="nav-link<?= $section == 'details' ? ' active':'' ?>">Details</a>
                 <a href="<?= url(ROUTE_SINGLE_USER_BUSINESS_REVIEWS, ['business_id' => $business->getId()]) ?>" class="nav-link<?= $section == 'reviews' ? ' active':'' ?>">Reviews</a>
+                <a href="<?= url(ROUTE_SINGLE_USER_BUSINESS_CHATS, ['business_id' => $business->getId()]) ?>" class="nav-link<?= $section == 'chats' ? ' active':'' ?>">Customer Chats</a>
             </div>
 
             <hr class="mb-4">
@@ -171,7 +182,7 @@ $categories = getCategories();
                                     </div>
                                     <div class="customer-rating<?php if($review->rating < 4){ ?> customer-rating-red<?php } ?>"><?= number_format($review->rating, 1) ?></div>
                                 </div>
-                                <p class="customer-text">
+                                <p class="customer-text mt-0">
                                 <?= $review->review ?>
                                 </p>
                             </div>
@@ -187,6 +198,10 @@ $categories = getCategories();
                 <?php } ?>
 
 
+            </div>
+            <?php }elseif($section == 'chats'){ ?>
+            <div id="talkjs-container" style="width: 90%; margin: 30px; height: 500px">
+                <i>Loading customer chats for <?= $business->name ?>...</i>
             </div>
             <?php }else{ ?>
 
@@ -257,32 +272,60 @@ $categories = getCategories();
                     </div>
 
 
-                    <!-- <div class="col-12">
-                        <h4>Business Hours</h4> -->
+                    <div class="col-12 mb-3">
+                        <h4>Business Hours</h4>
 
-                        <!-- <?php foreach ($days as $key=>$day){ ?>
-                            <div class="d-flex mb-3">
-                                <label><?= $day ?></label>
-                                <select name="<?= $key ?>[opens]" class="form-control">
-                                    <option value="">Opens At</option>
-                                    <?php for($i = 0; $i < 24; $i++){ ?>
-                                        <option value="<?= $i ?>"<?php if($_POST[$key.'[opens]'] == $i){ ?> selected<?php } ?>>
-                                            <?= ($i > 12 ? (($i-12).':00 PM'):($i == 12 ? '12:00 Noon':($i.':00 AM'))) ?>
-                                        </option>
-                                    <?php } ?>
-                                </select>
+                        <table>
 
-                                <select name="<?= $key ?>[closes]" class="form-control">
-                                    <option value="">Closes At</option>
-                                    <?php for($i = 0; $i < 24; $i++){ ?>
-                                        <option value="<?= $i ?>"<?php if($_POST[$key.'[closes]'] == $i){ ?> selected<?php } ?>>
-                                            <?= ($i > 12 ? (($i-12).':00 PM'):($i == 12 ? '12:00 Noon':($i.':00 AM'))) ?>
-                                        </option>
-                                    <?php } ?>
-                                </select>
-                            </div>
+                        <tr>
+                            <th>Day</th>
+                            <th>Opens</th>
+                            <th>Closes</th>
+                        </tr>
+                        <?php foreach ($days as $key=>$day){ ?>
+                            <tr>
+                                <th class="pr-3 pb-3"><?= $day.':' ?></th>
+
+                                <?php
+                                $open_id = $key.'_open';
+                                $close_id = $key.'_close';
+
+                                $opens_at = $business->getOpensAt($key);
+                                $closes_at = $business->getClosesAt($key);
+                                ?>
+
+                                <td class="pr-3 pb-3">
+                                    <select
+                                        name="<?= $open_id ?>" class="form-control"
+                                        id="<?= $open_id ?>"
+                                        onchange="if(this.value == ''){document.querySelector('#<?= $close_id ?>').selectedIndex = 0;}"
+                                        >
+                                        <option value="" <?php if($opens_at == null){ ?>selected<?php } ?>>Closed</option>
+                                        <?php for($i = 0; $i < 24; $i++){ ?>
+                                            <option value="<?= $i ?>"<?php if(($_POST[$open_id] ?? $opens_at) == $i && $opens_at > -1){ ?> selected<?php } ?>>
+                                                <?= ($i > 12 ? (($i-12).':00 PM'):($i == 12 ? '12:00 Noon':($i.':00 AM'))) ?>
+                                            </option>
+                                        <?php } ?>
+                                    </select>
+                                </td>
+
+                                <td class="pb-3">
+                                    <select name="<?= $close_id ?>" class="form-control" id="<?= $close_id ?>"
+                                    onchange="if(this.value == ''){document.querySelector('#<?= $open_id ?>').selectedIndex = 0;}"
+                                    >
+                                        <option value="">Closed</option>
+                                        <?php for($i = 0; $i < 24; $i++){ ?>
+                                            <option value="<?= $i ?>"<?php if(($_POST[$close_id] ?? $closes_at) == $i && $closes_at > -1){ ?> selected<?php } ?>>
+                                                <?= ($i > 12 ? (($i-12).':00 PM'):($i == 12 ? '12:00 Noon':($i.':00 AM'))) ?>
+                                            </option>
+                                        <?php } ?>
+                                    </select>
+                                </td>
+                            </tr>
                         <?php } ?>
-                    </div> -->
+
+                        </table>
+                    </div>
 
                     <div class="col-12">
                         <button class="btn btn-success btn-lg">
@@ -305,20 +348,40 @@ $categories = getCategories();
     <script src="assets/js/bootstrap.min.js"></script>
 
     <script>
-        $(window).scroll(function() {
-            // 100 = The point you would like to fade the nav in.
-
-            if ($(window).scrollTop() > 100) {
-
-                $('.fixed').addClass('is-sticky');
-
-            } else {
-
-                $('.fixed').removeClass('is-sticky');
-
-            };
-        });
+        $('.fixed').addClass('is-sticky');
     </script>
+
+    <?php if($section == 'chats'){ ?>
+
+    <script>
+    (function(t,a,l,k,j,s){
+    s=a.createElement('script');s.async=1;s.src="https://cdn.talkjs.com/talk.js";a.head.appendChild(s)
+    ;k=t.Promise;t.Talk={v:3,ready:{then:function(f){if(k)return new k(function(r,e){l.push([f,r,e])});l
+    .push([f])},catch:function(){return k&&new k()},c:l}};})(window,document,[]);
+    </script>
+
+    <script>
+        Talk.ready.then(function () {
+            var me = new Talk.User({
+                id: 'b_<?= $business->getId() ?>',
+                name: '<?= explode(' ', $business->user->name)[0].' from '.$business->name ?>',
+                email: '<?= $business->email ?>',
+                photoUrl: '<?= public_file($business->images[0]) ?>',
+                welcomeMessage: 'Hello, thanks for reaching out to <?= $business->name ?>',
+            });
+            
+            window.talkSession = new Talk.Session({
+                appId: '<?= TALKJS_APP_ID ?>',
+                me: me,
+            });
+            
+            var inbox = window.talkSession.createInbox();
+            inbox.mount(document.getElementById('talkjs-container'));
+        });
+
+    </script>
+
+    <?php } ?>
 </body>
 
 </html>

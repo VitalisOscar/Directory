@@ -41,6 +41,13 @@ function url($route, $params = []){
 }
 
 /**
+ * Get current url
+ */
+function currentUrl(){
+    return "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+}
+
+/**
  * Check if data has been submitted via POST method
  * @return bool
  */

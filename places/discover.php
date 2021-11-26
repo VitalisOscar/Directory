@@ -60,60 +60,41 @@ $businesses = getBusinessResults();
         <div class="container">
             <div class="row">
                 <div class="col-12 responsive-wrap">
-                    <div class="row detail-filter-wrap">
-                        <div class="col-md-4 featured-responsive">
+                    <form method="get" class="row detail-filter-wrap">
+                        <div class="col-md-4 px-0 featured-responsive">
                             <div class="detail-filter-text">
-                                <p><?= count($businesses) ?> total</span></p>
+                                <h4 class="font-weight-600 mb-0"><?= count($businesses) ?> total</h5>
                             </div>
                         </div>
-                    </div>
+                    
+                        <div class="col-md-8 px-0">
+                            <div class="d-flex align-items-center justify-content-end">
 
-                    <div class="row d-none">
-                        <div class="col-md-8">
-                            <div class="row detail-checkbox-wrap">
-                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
-
-                                    <label class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input">
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">With Acknowledgements</span>
-                                    </label>
-                                </div>
-                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
-                                    <label class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input">
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Verified Businesses</span>
-                                    </label>
-                                </div>
-
-                                <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
-
-                                    <label class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input">
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Open Now</span>
-                                    </label>
-                                </div>
+                                <label class="custom-control custom-checkbox mr-3 mb-0">
+                                    <input name="known" <?php if(get('known')){ ?>checked<?php } ?> type="checkbox" class="custom-control-input">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">With Reviews</span>
+                                </label>
+                            
+                                <label class="custom-control custom-checkbox mr-3 mb-0">
+                                    <input type="checkbox" name="open" <?php if(get('open')){ ?>checked<?php } ?> class="custom-control-input">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Open Now</span>
+                                </label>
                                 
+                                <select class="custom-select mb-2 mr-sm-2 mb-sm-0" name="order">
+                                    <option value="">Order Default</option>
+                                    <option value="ratings" <?php if(get('order') == 'ratings'){ ?>selected<?php } ?>>Top Rated</option>
+                                    <option value="oldest" <?php if(get('order') == 'oldest'){ ?>selected<?php } ?>>Oldest Listings</option>
+                                </select>
+
+                                <input type="hidden" name="category_id" value="<?= get('category_id') ?? ''   ?>">
+
+                                <button class="btn btn-primary">Update</button>
                             </div>
                         </div>
 
-                        <div class="col-md-4">
-                            <div class="detail-filter">
-                                <p>Order by</p>
-                                <form class="filter-dropdown" action="" method="get">
-                                    <input type="hidden" name="category_id" value="<?= get('category_id') ?? ''   ?>">
-                                    <select class="custom-select mb-2 mr-sm-2 mb-sm-0" id="inlineFormCustomSelect">
-                                        <option value="">Default</option>
-                                        <option value="latest">Recently Listed</option>
-                                        <option value="oldest">Oldest Listings</option>
-                                    </select>
-                                </form>
-                            </div>
-                        </div>
-
-                    </div>
+                    </form>
 
                     <?php if(count($businesses) == 0){ ?>
                     <div class="row pt-5">
@@ -137,7 +118,7 @@ $businesses = getBusinessResults();
                                             <?php if($business->isOpen()){ ?>
                                                 <span class="position-absolute top-0 left-0 d-inline-block bg-success text-white px-2 py-1 font-weight-500">Open</span>
                                             <?php } else { ?>
-                                                <span class="position-absolute top-0 left-0 d-inline-block bg-success text-white px-2 py-1 font-weight-500">Open</span>
+                                                <span class="position-absolute top-0 left-0 d-inline-block bg-danger text-white px-2 py-1 font-weight-500">Closed</span>
                                             <?php } ?>
                                             <div class="embed-responsive embed-responsive-16by9">
                                                 <div class="embed-responsive-item">
@@ -221,19 +202,7 @@ $businesses = getBusinessResults();
     <script src="assets/js/bootstrap.min.js"></script>
 
     <script>
-        $(window).scroll(function() {
-            // 100 = The point you would like to fade the nav in.
-
-            if ($(window).scrollTop() > 100) {
-
-                $('.fixed').addClass('is-sticky');
-
-            } else {
-
-                $('.fixed').removeClass('is-sticky');
-
-            };
-        });
+        $('.fixed').addClass('is-sticky');
     </script>
 </body>
 

@@ -42,7 +42,7 @@ $user = SessionManager::getUser();
                     <div class="slider-title_box">
                         <div class="row d-flex justify-content-center">
                             <div class="col-md-10 pt-3">
-                                <h2 class="text-white">User Dashboard</h2>
+                                <h2 class="text-white">User Area</h2>
                             </div>
                         </div>
                     </div>
@@ -82,10 +82,10 @@ $user = SessionManager::getUser();
             <div class="row">
                 <div class="col-md-6 col-lg-4 mb-3">
                     <div class="border p-4 rounded bg-white">
-                        <h6 class="mb-3 text-danger">Your Places</h6>
+                        <h6 class="mb-3 text-danger">My Places</h6>
 
                         <p class="mb-3">
-                            View and manage all places you have listed on this platform
+                            View the places you have listed on this platform, reviews and messages
                         </p>
 
                         <div>
@@ -110,14 +110,14 @@ $user = SessionManager::getUser();
 
                 <div class="col-md-6 col-lg-4 mb-3">
                     <div class="border p-4 rounded bg-white">
-                        <h6 class="mb-3 text-danger">Chats</h6>
+                        <h6 class="mb-3 text-danger">My Chats with Businesses</h6>
 
                         <p class="mb-3">
-                            View all your chats with customers and businesses and keep talking 
+                            View your chats you started with businesses and continue the conversation 
                         </p>
 
                         <div>
-                            <a href="<?= ROUTE_ADD_BUSINESS ?>">View Chats</a>
+                            <a href="<?= ROUTE_CHATS ?>">View Chats</a>
                         </div>
                     </div>
                 </div>
@@ -147,19 +147,7 @@ $user = SessionManager::getUser();
     <script src="assets/js/bootstrap.min.js"></script>
 
     <script>
-        $(window).scroll(function() {
-            // 100 = The point you would like to fade the nav in.
-
-            if ($(window).scrollTop() > 100) {
-
-                $('.fixed').addClass('is-sticky');
-
-            } else {
-
-                $('.fixed').removeClass('is-sticky');
-
-            };
-        });
+        $('.fixed').addClass('is-sticky');
     </script>
 </body>
 

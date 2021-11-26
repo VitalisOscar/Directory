@@ -4,11 +4,17 @@ require __DIR__ . '/../init.php';
 
 $response = null;
 
+$return = get('return');
+
 if(dataPosted()){
     $response = require __DIR__ . '/../core/logic/auth/signin.php';
 
     if(is_bool($response) && $response){
-        redirect(ROUTE_USER_DASHBOARD);
+        if($return != null){
+            redirect($return);
+        }else{
+            redirect(ROUTE_USER_DASHBOARD);
+        }
     }
 }
 
@@ -90,7 +96,7 @@ if(dataPosted()){
                         </div>
 
                         <div>
-                            Not registered? <a href="<?= ROUTE_REGISTER ?>">Create Account</a>
+                            Not registered? <a href="<?= url(ROUTE_REGISTER, ['return' => $return]) ?>">Create Account</a>
                         </div>
                     </div>
                 </form>
@@ -106,19 +112,7 @@ if(dataPosted()){
     <script src="assets/js/bootstrap.min.js"></script>
 
     <script>
-        $(window).scroll(function() {
-            // 100 = The point you would like to fade the nav in.
-
-            if ($(window).scrollTop() > 100) {
-
-                $('.fixed').addClass('is-sticky');
-
-            } else {
-
-                $('.fixed').removeClass('is-sticky');
-
-            };
-        });
+        $('.fixed').addClass('is-sticky');
     </script>
 </body>
 
