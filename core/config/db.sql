@@ -51,3 +51,5 @@ CREATE TABLE IF NOT EXISTS `acknowledgements`(
 ALTER TABLE `businesses` ADD `hours` TEXT NULL DEFAULT '{}' AFTER `website`; 
 
 ALTER TABLE `users` ADD `role` VARCHAR(20) DEFAULT 'user' AFTER `password`;
+
+INSERT INTO `users` (`name`, `email`, `phone`, `password`, `role`) VALUES('Administrator', 'admin@gmail.com', '0700999888', '$2y$10$YeGZx.rvZx0IVI41mcvCt.iwvJrfdVJiarF9rDsZhWen3ZtYDuwA.', 'admin');

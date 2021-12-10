@@ -181,7 +181,6 @@ foreach($sqls as $key => $sql){
                         <li class="list-group-item bg-primary text-white">
                             <h6 class="mb-0">Useful Shortcuts</h6>
                         </li>
-                        
                         <li class="list-group-item">
                             <a href="<?= url(ROUTE_HOME) ?>">Visit Main Site</a>
                         </li>

@@ -15,7 +15,14 @@ if(dataPosted()){
         if($return != null){
             redirect($return);
         }else{
-            redirect(ROUTE_USER_DASHBOARD);
+
+            $user = SessionManager::getUser();
+
+            if($user->isAdmin()){
+                redirect(ROUTE_ADMIN_HOME);
+            }else{
+                redirect(ROUTE_USER_DASHBOARD);
+            }
         }
     }
 }

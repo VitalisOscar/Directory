@@ -80,6 +80,22 @@ $user = SessionManager::getUser();
             </p>
 
             <div class="row">
+                <?php if($user->isAdmin()){ ?>
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="border p-4 rounded bg-white">
+                        <h6 class="mb-3 text-danger">Site Administration</h6>
+
+                        <p class="mb-3">
+                            Open the admin dashboard to view and manage users, categories and businesses on the site
+                        </p>
+
+                        <div>
+                            <a href="<?= ROUTE_ADMIN_HOME ?>">Open Admin Dashboard</a>
+                        </div>
+                    </div>
+                </div>
+                <?php } ?>
+
                 <div class="col-md-6 col-lg-4 mb-3">
                     <div class="border p-4 rounded bg-white">
                         <h6 class="mb-3 text-danger">My Places</h6>

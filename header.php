@@ -15,6 +15,8 @@
     if(!in_array($categories_file, get_included_files())){
         require $categories_file;
     }
+
+    $user = SessionManager::getUser();
 ?>
 
 <div class="nav-menu">
@@ -46,11 +48,17 @@
                                 </li>
                                 <li class="nav-item">
                                     <?php if(SessionManager::loggedIn()){ ?>
-                                        <a class="nav-link" href="<?= ROUTE_USER_DASHBOARD ?>">User Area</a>
+                                        <?php if($user->isAdmin()){ ?>
+                                            <a class="nav-link" href="<?= ROUTE_ADMIN_HOME ?>">Administration</a>    
+                                        <?php }else{ ?>        
+                                            <a class="nav-link" href="<?= ROUTE_USER_DASHBOARD ?>">User Area</a>
+                                        <?php } ?>
                                     <?php }else{ ?>
                                         <a class="nav-link" href="<?= ROUTE_USER_DASHBOARD ?>">Log In/Register</a>
                                     <?php } ?>
                                 </li>
+
+
                                 <li>
                                     <a href="<?= ROUTE_ADD_BUSINESS ?>" class="btn btn-danger top-btn"><span class="ti-plus"></span> List your Business</a>
                                 </li>
