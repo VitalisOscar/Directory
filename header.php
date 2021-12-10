@@ -46,13 +46,18 @@
                                 <li class="nav-item active">
                                     <a class="nav-link" href="<?= ROUTE_FIND_BUSINESSES ?>">Explore</a>
                                 </li>
+                                
+                                <?php if(SessionManager::loggedIn()){ ?>
+                                <?php if($user->isAdmin()){ ?>
                                 <li class="nav-item">
-                                    <?php if(SessionManager::loggedIn()){ ?>
-                                        <?php if($user->isAdmin()){ ?>
-                                            <a class="nav-link" href="<?= ROUTE_ADMIN_HOME ?>">Administration</a>    
-                                        <?php }else{ ?>        
-                                            <a class="nav-link" href="<?= ROUTE_USER_DASHBOARD ?>">User Area</a>
-                                        <?php } ?>
+                                    <a class="nav-link" href="<?= ROUTE_ADMIN_HOME ?>">Administration</a>    
+                                </li>
+                                <?php } ?>
+                                <?php } ?>
+
+                                <li class="nav-item">
+                                    <?php if(SessionManager::loggedIn()){ ?>        
+                                        <a class="nav-link" href="<?= ROUTE_USER_DASHBOARD ?>">User Area</a>
                                     <?php }else{ ?>
                                         <a class="nav-link" href="<?= ROUTE_USER_DASHBOARD ?>">Log In/Register</a>
                                     <?php } ?>
