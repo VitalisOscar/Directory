@@ -17,21 +17,47 @@ class SessionManager{
      */
     static function signOut(){
         unset($_SESSION[self::USER_SESSION_KEY]);
-        redirect(ROUTE_SIGNIN);
+
+        $route = ROUTE_SIGNIN;
+
+        if(isAdminContext()){
+            $route = ROUTE_ADMIN_SIGNIN;
+        }
+
+        redirect($route);
     }
 
     /**
      * Start a new user session
-     * @param User $user
      */
     static function mustBeLoggedIn(){
-        if(!self::loggedIn()){
-            redirect(url(ROUTE_SIGNIN, ['return' => currentUrl()]));
+        $route = ROUTE_SIGNIN;
+        if(isAdminContext()){
+            $route = ROUTE_ADMIN_SIGNIN;
+        }
+
+        $as_admin = false;
+        if(isAdminContext()){
+            $as_admin = true;
+        }
+
+        if(!self::loggedIn($as_admin)){
+            redirect(url($route, ['return' => currentUrl()]));
         }
     }
 
-    static function loggedIn(){
-        return self::getUser() != null;
+    static function loggedIn($as_admin = false){
+        $user = self::getUser();
+
+        if($user == null){
+            return false;
+        }
+
+        if($as_admin){
+            return $user->isAdmin();
+        }
+
+        return true;
     }
 
     /**

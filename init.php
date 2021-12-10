@@ -18,6 +18,7 @@ require __DIR__ . '/core/utils/functions.php';
 
 // Load routes
 require __DIR__ . '/core/config/routing.php';
+require __DIR__ . '/core/config/admin_routing.php';
 
 // Database connection
 require __DIR__ . '/core/utils/db.php';

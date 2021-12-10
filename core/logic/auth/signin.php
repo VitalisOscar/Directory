@@ -3,6 +3,7 @@
 if(isset($_POST['user_key'], $_POST['password'])){
     $user_key = post('user_key');
     $password = post('password');
+    $role = strtolower(post('role') ?? 'user');
 
     $sql = "SELECT * FROM `users` WHERE `email` = '$user_key' OR `phone` = '$user_key' LIMIT 1";
 
@@ -27,6 +28,12 @@ if(isset($_POST['user_key'], $_POST['password'])){
 
     // Authenticated
     $user = User::fromArray($user_data);
+
+    if($role == 'admin'){
+        if(!$user->isAdmin()){
+            return 'The account you logged in with does not have admin privileges';
+        }
+    }
 
     SessionManager::start($user);
 

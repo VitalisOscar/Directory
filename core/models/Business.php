@@ -19,6 +19,7 @@ class Business extends Model{
         $this->hours = json_decode($data['hours'] ?? "[]", true);
         $this->setId($data['id'] ?? null);
         $this->data = $data;
+        $this->updateDate($data['added_at'] ?? null);
 
         $this->user = User::fromArray([
             'id' => $data['user_id']  ?? null,
@@ -93,6 +94,10 @@ class Business extends Model{
         }
 
         return $hours[$key]['closes'];
+    }
+
+    function updateDate($time){
+        $this->added_at = explode(' ', $time)[0];
     }
 
     static function fromArray($data = []){

@@ -48,6 +48,15 @@ function currentUrl(){
 }
 
 /**
+ * Check if the current url is an admin url
+ */
+function isAdminContext(){
+    $url = currentUrl();
+
+    return preg_match("/".str_replace('/', '\/', BASE_ADMIN_URL)."/", $url);
+}
+
+/**
  * Check if data has been submitted via POST method
  * @return bool
  */

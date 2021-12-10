@@ -6,6 +6,8 @@ $response = null;
 
 $return = get('return');
 
+$role = strtolower(get('role') ?? post('role') ?? 'user');
+
 if(dataPosted()){
     $response = require __DIR__ . '/../core/logic/auth/signin.php';
 
@@ -54,7 +56,11 @@ if(dataPosted()){
                     <div class="slider-title_box">
                         <div class="row d-flex justify-content-center">
                             <div class="col-md-10 pt-3">
+                                <?php if($role == 'admin'){ ?>
+                                <h2 class="text-white">Admin Log In</h2>
+                                <?php }else{ ?>
                                 <h2 class="text-white">User Log In</h2>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>
@@ -76,6 +82,8 @@ if(dataPosted()){
                     </div>
                     <?php } ?>
 
+                    <input type="hidden" name="role" value="<?= get('role') ?>">
+
                     <div class="form-group">
                         <label for="user_key">Email or Phone Number:</label>
                         <input type="text" name="user_key" id="user_key" class="form-control" value="<?= $_POST["user_key"] ?? '' ?>" required>
@@ -90,6 +98,7 @@ if(dataPosted()){
                         <button class="btn btn-danger btn-block">Log In</button>
                     </div>
 
+                    <?php if($role != 'admin'){ ?>
                     <div class="text-center">
                         <div class="mb-2">
                             Forgot Password? <a href="<?= ROUTE_REGISTER ?>">Reset</a>
@@ -99,6 +108,7 @@ if(dataPosted()){
                             Not registered? <a href="<?= url(ROUTE_REGISTER, ['return' => $return]) ?>">Create Account</a>
                         </div>
                     </div>
+                    <?php } ?>
                 </form>
             </div>
 

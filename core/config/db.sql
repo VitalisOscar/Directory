@@ -49,3 +49,5 @@ CREATE TABLE IF NOT EXISTS `acknowledgements`(
 );
 
 ALTER TABLE `businesses` ADD `hours` TEXT NULL DEFAULT '{}' AFTER `website`; 
+
+ALTER TABLE `users` ADD `role` VARCHAR(20) DEFAULT 'user' AFTER `password`;
