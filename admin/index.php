@@ -24,7 +24,9 @@ foreach($sqls as $key => $sql){
 }
 
 $page_stats = VisitTracker::getPageStats();
-$visit_stats = VisitTracker::getVisitStats();
+$visits = VisitTracker::getVisitStats();
+
+$visit_stats = $visits['stats'];
 
 ?>
 
@@ -180,7 +182,7 @@ $visit_stats = VisitTracker::getVisitStats();
             <div class="row mb-5">
 
                 <div class="col-md-7 col-lg-8">
-                    <h4 class="font-weight-600">30 Day Total Visits</h4>
+                    <h4 class="font-weight-600">30 Day Visits - <?= $visits['total'] ?> Total</h4>
 
                     <div class="card shadow-sm">
                         <div class="card-body">
@@ -237,7 +239,7 @@ $visit_stats = VisitTracker::getVisitStats();
 
 <script>
 
-    var amount_chart = new Chart(document.querySelector('#visit_stats'), {
+    new Chart(document.querySelector('#visit_stats'), {
         type: 'line',
         data: {
             labels: [

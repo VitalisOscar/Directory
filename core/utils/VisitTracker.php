@@ -37,12 +37,15 @@ class VisitTracker{
         }
         
         $stats = [];
+        $total_visits = 0;
 
         while($row = $result->fetch_assoc()){
             $day = Carbon::createFromFormat('Y-m-d', $row['day']);
             $row['day'] = substr($day->monthName, 0, 3).' '.$day->day;
             $stats[$day->dayOfYear] = $row;
             unset($missing[$day->dayOfYear]);
+
+            $total_visits += $row['visits'];
         }
 
         foreach ($missing as $key => $val){
@@ -51,7 +54,10 @@ class VisitTracker{
 
         ksort($stats);
 
-        return $stats;
+        return [
+            'stats' => $stats,
+            'total' => $total_visits
+        ];
     }
 
     static function getPageStats(){
