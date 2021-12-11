@@ -23,6 +23,9 @@ foreach($sqls as $key => $sql){
     $stats[$key] = $row[$key] ?? 0;
 }
 
+$page_stats = VisitTracker::getPageStats();
+$visit_stats = VisitTracker::getVisitStats();
+
 ?>
 
 <!DOCTYPE html>
@@ -174,8 +177,18 @@ foreach($sqls as $key => $sql){
 
             </div>
 
-            <div class="row">
-                
+            <div class="row mb-5">
+
+                <div class="col-md-7 col-lg-8">
+                    <h4 class="font-weight-600">30 Day Total Visits</h4>
+
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <canvas id="visit_stats"></canvas>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="col-md-5 col-lg-4">
                     <ul class="list-group">
                         <li class="list-group-item bg-primary text-white">
@@ -205,8 +218,85 @@ foreach($sqls as $key => $sql){
 
             </div>
 
+            <div class="row">
+                <div class="col-md-8 col-lg-8">
+
+
+                    <h4 class="font-weight-600">Page Views (All time)</h4>
+                    <canvas id="page_stats" height=""></canvas>
+
+                </div>
+            </div>
+
         </div>
     </section>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<script>
+
+    var amount_chart = new Chart(document.querySelector('#visit_stats'), {
+        type: 'line',
+        data: {
+            labels: [
+                <?php foreach ($visit_stats as $stat){ ?>
+                    "<?= $stat['day'] ?>",
+                <?php } ?>
+            ],
+            datasets: [
+                {
+                    label: 'Total Visits',
+                    data: [
+                    <?php foreach ($visit_stats as $stat){ ?>
+                        <?= $stat['visits'] ?>,
+                    <?php } ?>
+                    ],
+                    borderWidth: 1,
+                    borderColor: 'dodgerblue',
+                }
+            ]
+        },
+        options: {
+            spanGaps: true,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+
+    new Chart(document.querySelector('#page_stats'), {
+        type: 'bar',
+        data: {
+            labels: [
+                <?php foreach ($page_stats as $stat){ ?>
+                    "<?= $stat['page'] ?>",
+                <?php } ?>
+                ],
+            datasets: [{
+                label: 'Total Views',
+                data: [
+                <?php foreach ($page_stats as $stat){ ?>
+                    <?= $stat['views'] ?>,
+                <?php } ?>    
+                ],
+                borderWidth: 2,
+                backgroundColor: [
+                <?php foreach ($page_stats as $stat){ ?>
+                    "<?= $stat['color'] ?>",
+                <?php } ?>  
+                ],
+            }]
+        },
+        options: {}
+    });
+
+</script>
 
 </body>
 </html>

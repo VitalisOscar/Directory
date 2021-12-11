@@ -48,6 +48,57 @@ function currentUrl(){
 }
 
 /**
+ * Get current page, e.g /discover
+ */
+function currentPage(){
+    $url = currentUrl();
+    $url = explode('?', $url)[0];
+
+    $base_url = preg_replace('/(http:\/\/)|(https:\/\/)/', '', BASE_URL);
+    $url = preg_replace('/(http:\/\/)|(https:\/\/)/', '', $url);
+
+    $page = substr_replace($url, '', 0, strlen($base_url));
+
+    // Add initial slash
+    if(substr($page, 0, 1) != '/'){
+       $page = '/' . $page;
+    }
+
+    return $page;
+}
+
+/**
+ * Get url query params
+ * @return array
+ */
+function getUrlParams(){
+    $url = currentUrl();
+
+    $query_params = explode('?', $url)[1] ?? null;
+
+    if($query_params == null){
+        return [];
+    }
+
+    $params = [];
+    $query_params = explode('&', $query_params);
+
+    foreach($query_params as $qp){
+        $qp = explode('=', $qp);
+
+        $params[$qp[0]] = $qp[1] ?? null;
+    }
+
+    return $params;
+}
+
+function getIpAddress(){
+    return $_SERVER['REMOTE_ADDR'] ??
+        $_SERVER['REMOTE_HOST'] ??
+        'Unknown';
+}
+
+/**
  * Check if the current url is an admin url
  */
 function isAdminContext(){

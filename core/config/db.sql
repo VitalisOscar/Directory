@@ -53,3 +53,15 @@ ALTER TABLE `businesses` ADD `hours` TEXT NULL DEFAULT '{}' AFTER `website`;
 ALTER TABLE `users` ADD `role` VARCHAR(20) DEFAULT 'user' AFTER `password`;
 
 INSERT INTO `users` (`name`, `email`, `phone`, `password`, `role`) VALUES('Administrator', 'admin@gmail.com', '0700999888', '$2y$10$YeGZx.rvZx0IVI41mcvCt.iwvJrfdVJiarF9rDsZhWen3ZtYDuwA.', 'admin');
+
+CREATE TABLE IF NOT EXISTS `visits`(
+    `id` INTEGER(11) PRIMARY KEY AUTO_INCREMENT,
+    `user_id` INTEGER(11) NULL,
+    `device_id` VARCHAR(50) NOT NULL,
+    `ip_address` VARCHAR(20) NOT NULL,
+    `page` VARCHAR(255) NOT NULL,
+    `params` TEXT NULL,
+    `visited_at` DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+

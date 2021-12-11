@@ -1,5 +1,7 @@
 <?php
 
+use Carbon\Carbon;
+
 ini_set('display_errors',1);
 error_reporting(E_ALL);
 
@@ -29,4 +31,10 @@ require __DIR__ . '/core/config/misc.php';
 // Session management
 require __DIR__ . '/core/utils/SessionManager.php';
 
-// Initialize session
+// Visit Tracker
+require __DIR__ . '/core/utils/VisitTracker.php';
+
+// Track visits on main site
+if(!isAdminContext()){
+    VisitTracker::track();
+}
