@@ -19,7 +19,7 @@ DirectoryX is a places directory where:
 
 ## Uploads setup
 - Open [core/config/misc.php](https://github.com/VitalisOscar/Directory/blob/master/core/config/misc.php)
-- Set the **[FILE_UPLOADS_DIRECTORY](https://github.com/VitalisOscar/Directory/blob/master/core/config/misc.php#L3)** value to the full directory path of the uploads sub-folder in the project e.g **[C:/xampp/htdocs/projects/directoryx/uploads]** in windows or **[/opt/lampp/htdocs/projects/directoryx/uploads]** in linux where C:/xampp/htdocs/projects/directoryx is the project path
+- Set the **[FILE_UPLOADS_DIRECTORY](https://github.com/VitalisOscar/Directory/blob/master/core/config/misc.php#L3)** value to the full directory path of the uploads sub-folder in the project e.g **C:/xampp/htdocs/projects/directoryx/uploads** in windows or **/opt/lampp/htdocs/projects/directoryx/uploads** in linux where C:/xampp/htdocs/projects/directoryx is the project path
 
 ## Other setup
 Still under the [core/config/misc.php](https://github.com/VitalisOscar/Directory/blob/master/core/config/misc.php) file:
